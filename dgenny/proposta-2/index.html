@@ -541,6 +541,7 @@ kbd{font-family:inherit;border:1px solid currentColor;border-radius:4px;padding:
     <p class="a fs t-m mt-l r" style="--x:49.50;--y:8.70;--fs:1.875;--d:1">Valor mensal:</p>
     <p class="a fs t-l inv-v r" style="--x:49.42;--y:11.39;--fs:3.75;--d:1"><b data-k="avista" data-money></b></p>
     <p class="a fs t-s mt-l r" style="--x:49.69;--y:46.78;--fs:1.146;--d:3" data-k="formas"></p>
+    <p class="a fs t-s mt-s r" style="--x:49.69;--y:48.30;--fs:1.146;--d:3" data-k="obs"></p>
   </div>
 </section>
 
@@ -632,9 +633,10 @@ var PROPOSTA = {
   },
 
   investimento: {
-    avista: '1+11x de R$ 7.000',
+    avista: '1+11x de R$ 7.560',
     parcelado: '',
-    formas: 'PIX, Boleto, Cartão de crédito (sujeito a taxas)'
+    formas: 'PIX, Boleto, Cartão de crédito (sujeito a taxas)',
+    obs: 'Impostos inclusos'
   },
 
   // Próximos passos: feito = true marca o checkbox.
@@ -712,7 +714,7 @@ var SOCIAL = [
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
   /* ---- textos simples ---- */
-  var vals={cliente:P.cliente,data:P.data,projeto:P.projeto,avista:P.investimento.avista,parcelado:P.investimento.parcelado,formas:P.investimento.formas,validade:P.validadeDias+(P.validadeDias==1?' dia':' dias')};
+  var vals={cliente:P.cliente,data:P.data,projeto:P.projeto,avista:P.investimento.avista,parcelado:P.investimento.parcelado,formas:P.investimento.formas,obs:P.investimento.obs,validade:P.validadeDias+(P.validadeDias==1?' dia':' dias')};
   $$('[data-k]').forEach(function(el){el.textContent=vals[el.getAttribute('data-k')]||''});
   $$('[data-k="projeto"]').forEach(function(el){var t=[].concat(P.projeto||[]);el.innerHTML=t.map(function(x){return '<p>'+x+'</p>'}).join('')});
   $$('[data-k="capaTitulo"]').forEach(function(el){var sv=SERVICOS[(P.foco||2)-1]; el.innerHTML=P.capaTitulo||(sv?sv.titulo:'')});
