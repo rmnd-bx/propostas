@@ -527,10 +527,18 @@ kbd{font-family:inherit;border:1px solid currentColor;border-radius:4px;padding:
 </section>
 
 <!-- 08 PRAZOS — preenchido pelo CONFIG -->
-<section class="slide" id="s8" data-title="Prazos">
+<section class="slide" id="s8" data-title="Prazos gerais">
   <div class="stage">
-    <h2 class="a es-t r" style="--x:7.76;--y:7.71;--d:0">Prazos</h2>
-    <div class="gantt"><div class="gantt-in" data-gantt></div></div>
+    <h2 class="a es-t r" style="--x:7.76;--y:7.71;--d:0">Prazos gerais</h2>
+    <div class="gantt"><div class="gantt-in" data-gantt="prazos"></div></div>
+  </div>
+</section>
+
+<!-- 08b PRAZOS DO CICLO — preenchido pelo CONFIG (prazosCiclo) -->
+<section class="slide" id="s8c" data-title="Prazos do ciclo">
+  <div class="stage">
+    <h2 class="a es-t r" style="--x:7.76;--y:7.71;--d:0">Prazos do ciclo</h2>
+    <div class="gantt"><div class="gantt-in" data-gantt="prazosCiclo"></div></div>
   </div>
 </section>
 
@@ -629,6 +637,18 @@ var PROPOSTA = {
       { nome: 'Ciclo 7',             inicio: 10, fim: 10, dentro: true },
       { nome: 'Ciclo 8',             inicio: 11, fim: 11, dentro: true },
       { nome: 'Ciclo 9',             inicio: 12, fim: 12, dentro: true }
+    ]
+  },
+
+  // Slide "Prazos do ciclo": cronograma de um ciclo (mesmo formato de "prazos"). Remova para esconder o slide.
+  prazosCiclo: {
+    unidade: 'sem',
+    periodos: 4,
+    fases: [
+      { nome: 'Ciclo',                       inicio: 1, fim: 4, dentro: true, curto: 'Ciclo' },
+      { nome: 'Design e prototipação',       inicio: 1, fim: 1, dentro: true, curto: 'Design' },
+      { nome: 'Suporte ao desenvolvimento',  inicio: 2, fim: 2, dentro: true, curto: 'Suporte' },
+      { nome: 'Mensuração e evolução',       inicio: 3, fim: 3, dentro: true, curto: 'Mensuração' }
     ]
   },
 
@@ -787,15 +807,17 @@ var SOCIAL = [
     }).join('')+(loop&&R.titulo?'<p class="rt-m-cap r" style="--d:'+(n+1)+'">'+R.titulo+'</p>':'')+(loop&&R.legenda?'<p class="rt-m-cap r" style="--d:'+(n+1)+'">'+R.legenda+'</p>':'');
   })();
 
-  /* ---- prazos (gantt) ---- */
-  var W=P.prazos.periodos||P.prazos.semanas, UN=P.prazos.unidade||'sem', L=7.85, TOT=86.33, cw=TOT/W, top=17.63, bot=P.prazos.fases.length>6?21.6+(P.prazos.fases.length-1)*2.45+3.1:43.60, g='';
+  /* ---- prazos (gantt) — um por slide com [data-gantt="chave do CONFIG"] ---- */
+  function gantt(PZ, box){
+  if(!PZ||!box) return;
+  var W=PZ.periodos||PZ.semanas, UN=PZ.unidade||'sem', L=7.85, TOT=86.33, cw=TOT/W, top=17.63, bot=PZ.fases.length>6?21.6+(PZ.fases.length-1)*2.45+3.1:43.60, g='';
   g+='<span class="g-line" style="--i:'+W+';left:calc(var(--u)*'+(L+W*cw)+');top:calc(var(--v)*'+top+');height:calc(var(--v)*'+(bot-top)+')"></span>';
   for(var k=0;k<W;k++){
     var x=L+k*cw;
     g+='<span class="g-line" style="--i:'+k+';left:calc(var(--u)*'+x+');top:calc(var(--v)*'+top+');height:calc(var(--v)*'+(bot-top)+')"></span>';
     g+='<span class="g-wk" style="left:calc(var(--u)*'+x+');top:calc(var(--v)*18.28);width:calc(var(--u)*'+cw+')">'+UN+' '+(k+1)+'</span>';
   }
-  var F=P.prazos.fases, n=F.length, NR=F.some(function(f){return f.linha})?Math.max.apply(null,F.map(function(f){return f.linha||1})):0;
+  var F=PZ.fases, n=F.length, NR=F.some(function(f){return f.linha})?Math.max.apply(null,F.map(function(f){return f.linha||1})):0;
   F.forEach(function(f,i){
     var y0=n>6?21.6:(n>3?22.6:23.5), span=n>6?(n-1)*2.45:(n>3?18.4:13.77), y=n>1?y0+i*(span/(n-1)):y0, x0=L+(f.inicio-1)*cw+.16, x1=L+f.fim*cw-.17;
     if(NR){ var r=(f.linha||1)-1; y=NR>1?26-((NR-2)*1.5)+r*(NR>2?6:8):30; }
@@ -803,16 +825,22 @@ var SOCIAL = [
     else g+='<span class="g-lbl" data-r="'+(x1+1.1)+'" data-l="'+(100-x0+1.1)+'" style="--i:'+i+';top:calc(var(--v)*'+y+' + var(--bh)/2)">'+esc(f.nome)+'</span>';
     g+='<span class="g-bar" style="--i:'+i+';left:calc(var(--u)*'+x0+');top:calc(var(--v)*'+y+');width:calc(var(--u)*'+(x1-x0)+')"></span>';
   });
-  $('[data-gantt]').innerHTML=g; $('.gantt').classList.toggle('many',W>8);
+  box.innerHTML=g; box.parentNode.classList.toggle('many',W>8);
   /* nome ao lado direito da barra; se não couber até a última linha, vai para o lado esquerdo */
   function placeLbl(){
-    var box=$('[data-gantt]'), br=box.getBoundingClientRect(), lim=br.left+br.width*((L+W*cw)/100)+2;
+    var br=box.getBoundingClientRect(), lim=br.left+br.width*((L+W*cw)/100)+2;
     $$('.g-lbl:not(.g-in)',box).forEach(function(el){
       el.style.right=''; el.style.left='calc(var(--u)*'+el.getAttribute('data-r')+')';
       if(el.getBoundingClientRect().right>lim){ el.style.left=''; el.style.right='calc(var(--u)*'+el.getAttribute('data-l')+')'; }
     });
   }
   placeLbl(); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(placeLbl); window.addEventListener('resize',placeLbl);
+  }
+  $$('[data-gantt]').forEach(function(box){
+    var k=box.getAttribute('data-gantt')||'prazos', sec=box.closest('.slide');
+    if(!P[k]){ if(sec&&k!=='prazos') sec.parentNode.removeChild(sec); return; }
+    gantt(P[k], box);
+  });
 
   /* ---- fases ---- */
   (function(){
