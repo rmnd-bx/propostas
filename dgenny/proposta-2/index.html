@@ -620,16 +620,16 @@ var PROPOSTA = {
     unidade: 'mês',
     periodos: 12,
     fases: [
-      { nome: 'Análise e descoberta', inicio: 1, fim: 3, linha: 1 },
-      { nome: 'Sprint 1',             inicio: 4, fim: 4, linha: 2, dentro: true },
-      { nome: 'Sprint 2',             inicio: 5, fim: 5, linha: 2, dentro: true },
-      { nome: 'Sprint 3',             inicio: 6, fim: 6, linha: 2, dentro: true },
-      { nome: 'Sprint 4',             inicio: 7, fim: 7, linha: 2, dentro: true },
-      { nome: 'Sprint 5',             inicio: 8, fim: 8, linha: 2, dentro: true },
-      { nome: 'Sprint 6',             inicio: 9, fim: 9, linha: 2, dentro: true },
-      { nome: 'Sprint 7',             inicio: 10, fim: 10, linha: 2, dentro: true },
-      { nome: 'Sprint 8',             inicio: 11, fim: 11, linha: 2, dentro: true },
-      { nome: 'Sprint 9',             inicio: 12, fim: 12, linha: 2, dentro: true }
+      { nome: 'Análise e descoberta', inicio: 1, fim: 3, dentro: true, curto: 'Análise' },
+      { nome: 'Ciclo 1',             inicio: 4, fim: 4, dentro: true },
+      { nome: 'Ciclo 2',             inicio: 5, fim: 5, dentro: true },
+      { nome: 'Ciclo 3',             inicio: 6, fim: 6, dentro: true },
+      { nome: 'Ciclo 4',             inicio: 7, fim: 7, dentro: true },
+      { nome: 'Ciclo 5',             inicio: 8, fim: 8, dentro: true },
+      { nome: 'Ciclo 6',             inicio: 9, fim: 9, dentro: true },
+      { nome: 'Ciclo 7',             inicio: 10, fim: 10, dentro: true },
+      { nome: 'Ciclo 8',             inicio: 11, fim: 11, dentro: true },
+      { nome: 'Ciclo 9',             inicio: 12, fim: 12, dentro: true }
     ]
   },
 
@@ -787,7 +787,7 @@ var SOCIAL = [
   })();
 
   /* ---- prazos (gantt) ---- */
-  var W=P.prazos.periodos||P.prazos.semanas, UN=P.prazos.unidade||'sem', L=7.85, TOT=86.33, cw=TOT/W, top=17.63, bot=43.60, g='';
+  var W=P.prazos.periodos||P.prazos.semanas, UN=P.prazos.unidade||'sem', L=7.85, TOT=86.33, cw=TOT/W, top=17.63, bot=P.prazos.fases.length>6?21.6+(P.prazos.fases.length-1)*2.45+3.1:43.60, g='';
   g+='<span class="g-line" style="--i:'+W+';left:calc(var(--u)*'+(L+W*cw)+');top:calc(var(--v)*'+top+');height:calc(var(--v)*'+(bot-top)+')"></span>';
   for(var k=0;k<W;k++){
     var x=L+k*cw;
@@ -796,9 +796,9 @@ var SOCIAL = [
   }
   var F=P.prazos.fases, n=F.length, NR=F.some(function(f){return f.linha})?Math.max.apply(null,F.map(function(f){return f.linha||1})):0;
   F.forEach(function(f,i){
-    var y0=n>3?22.6:23.5, span=n>3?18.4:13.77, y=n>1?y0+i*(span/(n-1)):y0, x0=L+(f.inicio-1)*cw+.16, x1=L+f.fim*cw-.17;
+    var y0=n>6?21.6:(n>3?22.6:23.5), span=n>6?(n-1)*2.45:(n>3?18.4:13.77), y=n>1?y0+i*(span/(n-1)):y0, x0=L+(f.inicio-1)*cw+.16, x1=L+f.fim*cw-.17;
     if(NR){ var r=(f.linha||1)-1; y=NR>1?26-((NR-2)*1.5)+r*(NR>2?6:8):30; }
-    if(f.dentro) g+='<span class="g-lbl g-in" style="--i:'+i+';left:calc(var(--u)*'+x0+');width:calc(var(--u)*'+(x1-x0)+');top:calc(var(--v)*'+y+' + var(--bh)/2)"><span class="g-full">'+esc(f.nome)+'</span><span class="g-short">'+esc(f.curto||f.nome.replace(/^Sprint\s*/i,'S'))+'</span></span>';
+    if(f.dentro) g+='<span class="g-lbl g-in" style="--i:'+i+';left:calc(var(--u)*'+x0+');width:calc(var(--u)*'+(x1-x0)+');top:calc(var(--v)*'+y+' + var(--bh)/2)"><span class="g-full">'+esc(f.nome)+'</span><span class="g-short">'+esc(f.curto||f.nome.replace(/^(Sprint|Ciclo)\s*/i,function(w){return w.charAt(0).toUpperCase()}))+'</span></span>';
     else g+='<span class="g-lbl" data-r="'+(x1+1.1)+'" data-l="'+(100-x0+1.1)+'" style="--i:'+i+';top:calc(var(--v)*'+y+' + var(--bh)/2)">'+esc(f.nome)+'</span>';
     g+='<span class="g-bar" style="--i:'+i+';left:calc(var(--u)*'+x0+');top:calc(var(--v)*'+y+');width:calc(var(--u)*'+(x1-x0)+')"></span>';
   });
