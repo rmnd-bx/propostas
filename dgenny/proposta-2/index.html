@@ -731,7 +731,7 @@ var SOCIAL = [
     if(!sec) return;
     if(!P.rotina){ sec.parentNode.removeChild(sec); return; }
     var F=P.fases||[], n=F.length||1, colW=(84.12-(n-1)*1.37)/n, step=colW+1.37;
-    var HI=17, LO=21.2, TOP=14.2, BOT=47, TXT=28.2;
+    var HI=17, LO=21.2, TOP=14.2, BOT=34, TXT=28.2;
     var X=F.map(function(f,i){return 7.76+i*step+.6}), Y=F.map(function(f,i){return i%2?LO:HI});
     var tDot=function(i){return .7+i*.42};
     var g='<g stroke="#262626" stroke-width=".234">';
@@ -759,7 +759,7 @@ var SOCIAL = [
       X.map(function(x,i){ var up=!(i%2); return '<span class="rt-num" style="left:calc(var(--u)*'+(x+2.6)+');top:calc(var(--u)*'+(Y[i]+(up?-1.6:1.6))+')">'+(i+1)+'</span>'}).join('');
     cols.innerHTML=F.map(function(f,i){
       return '<div class="a w rt-col" style="--x:'+(X[i]+1.4).toFixed(3)+';--y:'+TXT+';--w:'+(colW-2.1).toFixed(3)+'">'+
-        '<div class="r" style="--d:'+(i+1)+'"><p class="fz-eye">Fase '+(i+1)+'</p><p class="es-n">'+f.nome+'</p><ul class="fz-list es-list">'+(f.itens||[]).map(function(t){return '<li><span>'+String(t).replace(/<br\s*\/?>/g,' ')+'</span></li>'}).join('')+'</ul></div></div>';
+        '<div class="r" style="--d:'+(i+1)+'"><p class="fz-eye">Fase '+(i+1)+'</p><p class="es-n">'+f.nome+'</p></div></div>';
     }).join('');
   })();
 
