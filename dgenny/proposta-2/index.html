@@ -189,6 +189,8 @@ h1,h2,h3,h4,h5{font-weight:300}
 .g-bar{position:absolute;height:var(--bh);background:#fff;border-radius:999px;transform-origin:left;transform:scaleX(0);transition:transform 0s}
 .active .g-bar{transform:none;transition:transform 1s cubic-bezier(.6,0,.2,1) calc(var(--i) * 300ms + 700ms)}
 .g-lbl{position:absolute;transform:translateY(-50%);font-size:calc(var(--u)*1.45);line-height:1.2;white-space:nowrap;opacity:0;transition:opacity .5s}
+.g-in{z-index:2;text-align:center;color:#000;font-size:calc(var(--u)*1.2)}
+.g-short{display:none}
 .active .g-lbl{opacity:1;transition-delay:calc(var(--i) * 300ms + 800ms)}
 
 /* ---------- 11 próximos passos ---------- */
@@ -329,6 +331,8 @@ kbd{font-family:inherit;border:1px solid currentColor;border-radius:4px;padding:
   .gantt-in{left:calc(var(--u)*-7.3);top:calc(var(--v)*-17)}
   .g-wk{font-size:max(9px,calc(var(--u)*1.146))}
   .g-lbl{font-size:max(10px,calc(var(--u)*1.45))}
+  .g-in{font-size:8px}.g-in .g-full{display:none}.g-in .g-short{display:inline}
+  .gantt.many .g-wk{font-size:7px;white-space:nowrap}
   /* 09 */
   .inv-v{margin-top:6px}
   /* 11 */
@@ -611,14 +615,21 @@ var PROPOSTA = {
 
   // Prazos: total de períodos e fases (período inicial e final, inclusive).
   // unidade: rótulo do topo de cada coluna ('sem' = semana, 'mês' = mês).
+  // linha (opcional): várias barras na mesma linha; dentro: true põe o nome dentro da barra.
   prazos: {
     unidade: 'mês',
-    periodos: 6,
+    periodos: 12,
     fases: [
-      { nome: 'Análise e descoberta', inicio: 1, fim: 3 },
-      { nome: 'Sprint 1',             inicio: 4, fim: 4 },
-      { nome: 'Sprint 2',             inicio: 5, fim: 5 },
-      { nome: 'Sprint 3',             inicio: 6, fim: 6 }
+      { nome: 'Análise e descoberta', inicio: 1, fim: 3, linha: 1 },
+      { nome: 'Sprint 1',             inicio: 4, fim: 4, linha: 2, dentro: true },
+      { nome: 'Sprint 2',             inicio: 5, fim: 5, linha: 2, dentro: true },
+      { nome: 'Sprint 3',             inicio: 6, fim: 6, linha: 2, dentro: true },
+      { nome: 'Sprint 4',             inicio: 7, fim: 7, linha: 2, dentro: true },
+      { nome: 'Sprint 5',             inicio: 8, fim: 8, linha: 2, dentro: true },
+      { nome: 'Sprint 6',             inicio: 9, fim: 9, linha: 2, dentro: true },
+      { nome: 'Sprint 7',             inicio: 10, fim: 10, linha: 2, dentro: true },
+      { nome: 'Sprint 8',             inicio: 11, fim: 11, linha: 2, dentro: true },
+      { nome: 'Sprint 9',             inicio: 12, fim: 12, linha: 2, dentro: true }
     ]
   },
 
@@ -783,17 +794,19 @@ var SOCIAL = [
     g+='<span class="g-line" style="--i:'+k+';left:calc(var(--u)*'+x+');top:calc(var(--v)*'+top+');height:calc(var(--v)*'+(bot-top)+')"></span>';
     g+='<span class="g-wk" style="left:calc(var(--u)*'+x+');top:calc(var(--v)*18.28);width:calc(var(--u)*'+cw+')">'+UN+' '+(k+1)+'</span>';
   }
-  var F=P.prazos.fases, n=F.length;
+  var F=P.prazos.fases, n=F.length, NR=F.some(function(f){return f.linha})?Math.max.apply(null,F.map(function(f){return f.linha||1})):0;
   F.forEach(function(f,i){
     var y0=n>3?22.6:23.5, span=n>3?18.4:13.77, y=n>1?y0+i*(span/(n-1)):y0, x0=L+(f.inicio-1)*cw+.16, x1=L+f.fim*cw-.17;
-    g+='<span class="g-lbl" data-r="'+(x1+1.1)+'" data-l="'+(100-x0+1.1)+'" style="--i:'+i+';top:calc(var(--v)*'+y+' + var(--bh)/2)">'+esc(f.nome)+'</span>';
+    if(NR){ var r=(f.linha||1)-1; y=NR>1?26-((NR-2)*1.5)+r*(NR>2?6:8):30; }
+    if(f.dentro) g+='<span class="g-lbl g-in" style="--i:'+i+';left:calc(var(--u)*'+x0+');width:calc(var(--u)*'+(x1-x0)+');top:calc(var(--v)*'+y+' + var(--bh)/2)"><span class="g-full">'+esc(f.nome)+'</span><span class="g-short">'+esc(f.curto||f.nome.replace(/^Sprint\s*/i,'S'))+'</span></span>';
+    else g+='<span class="g-lbl" data-r="'+(x1+1.1)+'" data-l="'+(100-x0+1.1)+'" style="--i:'+i+';top:calc(var(--v)*'+y+' + var(--bh)/2)">'+esc(f.nome)+'</span>';
     g+='<span class="g-bar" style="--i:'+i+';left:calc(var(--u)*'+x0+');top:calc(var(--v)*'+y+');width:calc(var(--u)*'+(x1-x0)+')"></span>';
   });
-  $('[data-gantt]').innerHTML=g;
+  $('[data-gantt]').innerHTML=g; $('.gantt').classList.toggle('many',W>8);
   /* nome ao lado direito da barra; se não couber até a última linha, vai para o lado esquerdo */
   function placeLbl(){
     var box=$('[data-gantt]'), br=box.getBoundingClientRect(), lim=br.left+br.width*((L+W*cw)/100)+2;
-    $$('.g-lbl',box).forEach(function(el){
+    $$('.g-lbl:not(.g-in)',box).forEach(function(el){
       el.style.right=''; el.style.left='calc(var(--u)*'+el.getAttribute('data-r')+')';
       if(el.getBoundingClientRect().right>lim){ el.style.left=''; el.style.right='calc(var(--u)*'+el.getAttribute('data-l')+')'; }
     });
