@@ -609,15 +609,16 @@ var PROPOSTA = {
   // Escopo: fases trabalhadas neste projeto (as outras aparecem apagadas). Ex.: [1] ou [1, 2]
   escopoFases: [1, 2, 3, 4],
 
-  // Prazos: total de semanas e fases (semana inicial e final, inclusive).
+  // Prazos: total de períodos e fases (período inicial e final, inclusive).
+  // unidade: rótulo do topo de cada coluna ('sem' = semana, 'mês' = mês).
   prazos: {
-    semanas: 10,
+    unidade: 'mês',
+    periodos: 6,
     fases: [
-      { nome: 'Mapeamento e jornadas do cenário atual',         inicio: 1, fim: 2 },
-      { nome: 'UX Research',                                    inicio: 3, fim: 6 },
-      { nome: 'Benchmark concorrentes e referências',           inicio: 7, fim: 7 },
-      { nome: 'Mapeamento do cenário ideal (fluxo de negócio)', inicio: 8, fim: 8 },
-      { nome: 'Hipóteses',                                      inicio: 9, fim: 10 }
+      { nome: 'Análise e descoberta', inicio: 1, fim: 3 },
+      { nome: 'Sprint 1',             inicio: 4, fim: 4 },
+      { nome: 'Sprint 2',             inicio: 5, fim: 5 },
+      { nome: 'Sprint 3',             inicio: 6, fim: 6 }
     ]
   },
 
@@ -775,12 +776,12 @@ var SOCIAL = [
   })();
 
   /* ---- prazos (gantt) ---- */
-  var W=P.prazos.semanas, L=7.85, TOT=86.33, cw=TOT/W, top=17.63, bot=43.60, g='';
+  var W=P.prazos.periodos||P.prazos.semanas, UN=P.prazos.unidade||'sem', L=7.85, TOT=86.33, cw=TOT/W, top=17.63, bot=43.60, g='';
   g+='<span class="g-line" style="--i:'+W+';left:calc(var(--u)*'+(L+W*cw)+');top:calc(var(--v)*'+top+');height:calc(var(--v)*'+(bot-top)+')"></span>';
   for(var k=0;k<W;k++){
     var x=L+k*cw;
     g+='<span class="g-line" style="--i:'+k+';left:calc(var(--u)*'+x+');top:calc(var(--v)*'+top+');height:calc(var(--v)*'+(bot-top)+')"></span>';
-    g+='<span class="g-wk" style="left:calc(var(--u)*'+x+');top:calc(var(--v)*18.28);width:calc(var(--u)*'+cw+')">sem '+(k+1)+'</span>';
+    g+='<span class="g-wk" style="left:calc(var(--u)*'+x+');top:calc(var(--v)*18.28);width:calc(var(--u)*'+cw+')">'+UN+' '+(k+1)+'</span>';
   }
   var F=P.prazos.fases, n=F.length;
   F.forEach(function(f,i){
