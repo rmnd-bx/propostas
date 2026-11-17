@@ -655,7 +655,7 @@ var PROPOSTA = {
   },
 
   // Slide "Rotina": fases que formam o ciclo (setas). Remova este bloco para esconder o slide.
-  rotina: { ciclo: [2, 3, 4], legenda: 'Etapas contínuas: separadas em pequenas entregas' },
+  rotina: { ciclo: [2, 3, 4], titulo: 'Ciclo mensal', legenda: 'Etapas contínuas: separadas em pequenas entregas' },
 
   // Slides de fases (um por fase, logo depois de "Como fazemos").
   fases: [
@@ -779,11 +779,12 @@ var SOCIAL = [
         '<p class="rt-n" style="--t:'+t+';'+pos+'top:calc(var(--u)*31.09);width:calc(var(--u)*'+(W[i]||18.89)+')">'+f(F[i].nome)+'</p>';
       function f(v){return v}
     }).join('');
+    if(loop&&R.titulo) h+='<p class="rt-cap" style="--t:'+(t1+.6).toFixed(2)+';left:calc(var(--u)*'+((xa+xb)/2+.03).toFixed(3)+');top:calc(var(--u)*14.9);white-space:nowrap">'+R.titulo+'</p>';
     if(loop&&R.legenda) h+='<p class="rt-cap" style="--t:'+(t2+1).toFixed(2)+';left:calc(var(--u)*'+((xa+xb)/2+.03).toFixed(3)+');top:calc(var(--u)*43.18);width:calc(var(--u)*24.01)">'+R.legenda+'</p>';
     dg.innerHTML=h;
     cols.innerHTML=F.map(function(f,i){
       return '<div class="rt-col r" style="--d:'+(i+1)+'"><p class="fz-eye">Fase '+(i+1)+'</p><p class="es-n">'+f.nome+'</p></div>';
-    }).join('')+(loop&&R.legenda?'<p class="rt-m-cap r" style="--d:'+(n+1)+'">'+R.legenda+'</p>':'');
+    }).join('')+(loop&&R.titulo?'<p class="rt-m-cap r" style="--d:'+(n+1)+'">'+R.titulo+'</p>':'')+(loop&&R.legenda?'<p class="rt-m-cap r" style="--d:'+(n+1)+'">'+R.legenda+'</p>':'');
   })();
 
   /* ---- prazos (gantt) ---- */
