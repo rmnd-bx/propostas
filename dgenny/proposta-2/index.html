@@ -162,6 +162,7 @@ h1,h2,h3,h4,h5{font-weight:300}
 .es-col.on .es-n{color:#fff}
 .es-list{max-width:calc(var(--u)*19);margin-top:calc(var(--u)*1.75)}
 .es-list li+li{margin-top:.55em}
+.inv-suf{font-size:.5em;font-weight:400;margin-left:.2em}
 .sv-x span{text-decoration:line-through;text-decoration-thickness:1px}
 .es-col:not(.on) .fz-eye,.es-col:not(.on) .es-n,.es-col:not(.on) .es-list li{text-decoration:line-through;text-decoration-thickness:1px}
 
@@ -547,8 +548,8 @@ kbd{font-family:inherit;border:1px solid currentColor;border-radius:4px;padding:
 <section class="slide" id="s9" data-title="Investimento" data-nocenter>
   <div class="stage">
     <h2 class="a es-t r" style="--x:7.76;--y:7.71;--d:0">Investimento</h2>
-    <p class="a fs t-m mt-l r" style="--x:49.50;--y:8.70;--fs:1.875;--d:1">Valor mensal:</p>
-    <p class="a fs t-l inv-v r" style="--x:49.42;--y:11.39;--fs:3.75;--d:1"><b data-k="avista" data-money></b></p>
+    <p class="a fs t-m mt-l r" style="--x:49.50;--y:8.70;--fs:1.875;--d:1">Valor:</p>
+    <p class="a fs t-l inv-v r" style="--x:49.42;--y:11.39;--fs:3.75;--d:1"><b data-k="avista" data-money></b><span class="inv-suf" data-k="sufixo"></span></p>
     <p class="a fs t-s mt-l r" style="--x:49.69;--y:46.78;--fs:1.146;--d:3" data-k="formas"></p>
     <p class="a fs t-s mt-s r" style="--x:49.69;--y:48.30;--fs:1.146;--d:3" data-k="obs"></p>
   </div>
@@ -654,7 +655,8 @@ var PROPOSTA = {
   },
 
   investimento: {
-    avista: '1+11x de R$ 7.560',
+    avista: 'R$ 7.560',
+    sufixo: '/mês',
     parcelado: '',
     formas: 'PIX, Boleto, Cartão de crédito (sujeito a taxas)',
     obs: 'Impostos inclusos'
@@ -737,7 +739,7 @@ var SOCIAL = [
   function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 
   /* ---- textos simples ---- */
-  var vals={cliente:P.cliente,data:P.data,projeto:P.projeto,avista:P.investimento.avista,parcelado:P.investimento.parcelado,formas:P.investimento.formas,obs:P.investimento.obs,validade:P.validadeDias+(P.validadeDias==1?' dia':' dias')};
+  var vals={cliente:P.cliente,data:P.data,projeto:P.projeto,avista:P.investimento.avista,parcelado:P.investimento.parcelado,formas:P.investimento.formas,sufixo:P.investimento.sufixo,obs:P.investimento.obs,validade:P.validadeDias+(P.validadeDias==1?' dia':' dias')};
   $$('[data-k]').forEach(function(el){el.textContent=vals[el.getAttribute('data-k')]||''});
   $$('[data-k="projeto"]').forEach(function(el){var t=[].concat(P.projeto||[]);el.innerHTML=t.map(function(x){return '<p>'+x+'</p>'}).join('')});
   $$('[data-k="capaTitulo"]').forEach(function(el){var sv=SERVICOS[(P.foco||2)-1]; el.innerHTML=P.capaTitulo||(sv?sv.titulo:'')});
