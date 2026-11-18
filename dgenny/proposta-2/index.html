@@ -162,6 +162,7 @@ h1,h2,h3,h4,h5{font-weight:300}
 .es-col.on .es-n{color:#fff}
 .es-list{max-width:calc(var(--u)*19);margin-top:calc(var(--u)*1.75)}
 .es-list li+li{margin-top:.55em}
+.sv-x span{text-decoration:line-through;text-decoration-thickness:1px}
 .es-col:not(.on) .fz-eye,.es-col:not(.on) .es-n,.es-col:not(.on) .es-list li{text-decoration:line-through;text-decoration-thickness:1px}
 
 /* ---------- rotina (Figma: Site RMND / Rotina UX) ---------- */
@@ -707,7 +708,9 @@ var PROPOSTA = {
   ],
 
   // Slide "Foco desta proposta": qual serviço será destacado (1, 2 ou 3).
-  foco: 2
+  foco: 2,
+  // Itens de serviço riscados no slide de foco (começo do texto do item).
+  riscarServicos: ['Experiência de marca']
 };
 
 /* Serviços REMIND (iguais em todas as propostas) */
@@ -869,7 +872,7 @@ var SOCIAL = [
     box.innerHTML=SERVICOS.map(function(sv,i){
       return '<div class="a cardw r'+(focus&&P.foco!==i+1?' off':'')+'" style="--x:'+SX[i]+';--y:13.54;--d:'+(i+1)+'"><article class="card">'+
         '<span class="num">0'+(i+1)+'</span><h3>'+sv.titulo+'</h3><ul>'+
-        sv.itens.map(function(t){return '<li><span>'+t+'</span></li>'}).join('')+'</ul></article></div>';
+        sv.itens.map(function(t){var x=focus&&(P.riscarServicos||[]).some(function(r){return t.indexOf(r)===0}); return '<li'+(x?' class="sv-x"':'')+'><span>'+t+'</span></li>'}).join('')+'</ul></article></div>';
     }).join('');
   });
   (function(){
